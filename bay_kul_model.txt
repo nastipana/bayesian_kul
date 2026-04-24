@@ -1,0 +1,28 @@
+model {
+  for (i in 1:N) {
+    Claims[i] ~ dnegbin(p[i], r)
+    p[i] <- r / (r + mu[i])
+    log(mu[i]) <- log(Holders[i]) + beta0
+                  + beta1 * equals(District[i], 2)
+                  + beta2 * equals(District[i], 3)
+                  + beta3 * equals(District[i], 4)
+                  + beta4 * equals(Age[i], 2)
+                  + beta5 * equals(Age[i], 3)
+                  + beta6 * equals(Age[i], 4)
+                  + beta7 * equals(Group[i], 2)
+                  + beta8 * equals(Group[i], 3)
+                  + beta9 * equals(Group[i], 4)
+  }
+
+  beta0 ~ dnorm(0, 0.0001)
+  beta1 ~ dnorm(0, 0.0001)
+  beta2 ~ dnorm(0, 0.0001)
+  beta3 ~ dnorm(0, 0.0001)
+  beta4 ~ dnorm(0, 0.0001)
+  beta5 ~ dnorm(0, 0.0001)
+  beta6 ~ dnorm(0, 0.0001)
+  beta7 ~ dnorm(0, 0.0001)
+  beta8 ~ dnorm(0, 0.0001)
+  beta9 ~ dnorm(0, 0.0001)
+  r ~ dgamma(0.01, 0.01)
+}
