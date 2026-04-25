@@ -74,7 +74,7 @@ model_string <- "model {
 
 writeLines(model_string, "bay_kul_model.txt")
 
-#mhhh idk about this
+#mhhh idk about this, these are the initial values
 my.inits <- function() {
   list(
     beta0 = rnorm(1, 0, 1),
@@ -91,11 +91,13 @@ my.inits <- function() {
   )
 }
 
+#these are the parameters to monitor
 parameters <- c("beta0", "beta1", "beta2", "beta3", "beta4",
                 "beta5", "beta6", "beta7", "beta8", "beta9", "r")
 
 library(rjags)
 
+#this is like the previous model bug and here we say how many chains and what te initial values are
 jags_model <- jags.model(
   file = "bay_kul_model.txt",
   data = jags_data,
@@ -103,8 +105,12 @@ jags_model <- jags.model(
   n.chains = 3
 )
 
+#this is like the part where we like try it and throw it away
 update(jags_model, 5000)  # burn-in
 
+#here we collect the actual samples we use
+#We thin because consecutive MCMC samples are correlated so now we keep every 10th
+#I initially did thin = 1 but there was too much autocorrelation
 results <- coda.samples(
   model = jags_model,
   variable.names = parameters,
@@ -114,11 +120,14 @@ results <- coda.samples(
 
 library(coda)
 
+#these are all different plots idk which ones to include or not
 traceplot(results)
 
 gelman.diag(results)
 gelman.plot(results, ask = FALSE)
 
 effectiveSize(results)
+
+densplot(results[, "r"])
 
 acfplot(results)
