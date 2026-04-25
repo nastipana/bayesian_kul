@@ -106,7 +106,8 @@ jags_model <- jags.model(
 )
 
 #this is like the part where we like try it and throw it away
-update(jags_model, 5000)  # burn-in
+# burn-in
+update(jags_model, 5000)
 
 #here we collect the actual samples we use
 #We thin because consecutive MCMC samples are correlated so now we keep every 10th
@@ -121,6 +122,7 @@ results <- coda.samples(
 library(coda)
 
 #these are all different plots idk which ones to include or not
+#i eventually included all of them in our word document
 traceplot(results)
 
 gelman.diag(results)
