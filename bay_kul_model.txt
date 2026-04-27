@@ -13,7 +13,6 @@ model {
                   + beta8 * equals(Group[i], 3)
                   + beta9 * equals(Group[i], 4)
   }
-
   beta0 ~ dnorm(0, 0.0001)
   beta1 ~ dnorm(0, 0.0001)
   beta2 ~ dnorm(0, 0.0001)
