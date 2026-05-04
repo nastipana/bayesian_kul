@@ -1,11 +1,11 @@
-#install packages
-install.packages("readr")
-install.packages("coda")
-install.packages("runjags")
-install.packages("MCMCvis")
-install.packages("ggmcmc")
-install.packages("basicMCMCplots")
-install.packages("rjags")
+# #install packages
+# install.packages("readr")
+# install.packages("coda")
+# install.packages("runjags")
+# install.packages("MCMCvis")
+# install.packages("ggmcmc")
+# install.packages("basicMCMCplots")
+# install.packages("rjags")
 
 #load libraries
 library(rjags)
@@ -163,6 +163,7 @@ results <- coda.samples(
   thin = 1
 )
 
+
 #diagnostics
 traceplot(results)
 gelman.diag(results)
@@ -171,3 +172,36 @@ effectiveSize(results)
 densplot(results[, "r"])
 acfplot(results)
 summary(results)
+
+
+# task 5 ########
+# save the results so that the mcmc does not need to be computed repeatedly
+result_sum <- summary(results)
+save(result_sum, file="result_summary.Rdata")
+
+
+load("result_summary.Rdata")
+coef <- result_sum[[1]][,1] # the coefficient estimates as vector
+
+# 1: predicting the number of insurance claims for each age group in District 1,
+# Car Group 1, and 100 policyholders
+
+# district 1 and car group 1: baseline --> given by intercept beta0, meaning 
+# that all x_ji=0, for j=1,2,3,7,8,9.
+# holders = 100 = E_i
+# what we need to fluctuate: x_4i/x_5i/x_6i
+# E[Yi] = exp(log(Ei) + beta0 + beta1*x1i + beta2*x2i + ...)
+
+# prediction of number of claims for ...
+# ... age group <25: exp(log(100)-log_Holders_mean + beta_0)
+exp(log(100)-log_Holders_mean + coef[1])
+# ... age group 25-29: exp(log(100)-log_Holders_mean + beta_0 + beta_4*1)
+exp(log(100)-log_Holders_mean + coef[1] + coef[5])
+# ... age group 30-35: exp(log(100)-log_Holders_mean + beta_0 + beta_5*1)
+exp(log(100)-log_Holders_mean + coef[1] + coef[6])
+# ... age group >35: exp(log(100)-log_Holders_mean + beta_0 + beta_6*1)
+exp(log(100)-log_Holders_mean + coef[1] + coef[7])
+
+# 2: Give summary measures and plots of the posterior predictive distributions.
+
+
