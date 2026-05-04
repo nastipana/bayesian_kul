@@ -114,7 +114,7 @@ jags_model <- jags.model(
 update(jags_model, 1000)
 
 #collect samples
-results <- coda.samples(
+results1 <- coda.samples(
   model = jags_model,
   variable.names = parameters,
   n.iter = 10000,
@@ -122,12 +122,12 @@ results <- coda.samples(
 )
 
 #diagnostics
-traceplot(results)
-gelman.diag(results)
-gelman.plot(results, ask = FALSE)
-effectiveSize(results)
-acfplot(results)
-summary(results)
+traceplot(results1)
+gelman.diag(results1)
+gelman.plot(results1, ask = FALSE)
+effectiveSize(results1)
+acfplot(results1)
+summary(results1)
 
 
 
@@ -135,7 +135,7 @@ summary(results)
 update(jags_model, 1000)
 
 #collect samples
-results <- coda.samples(
+results2 <- coda.samples(
   model = jags_model,
   variable.names = parameters,
   n.iter = 10000,
@@ -143,12 +143,12 @@ results <- coda.samples(
 )
 
 #diagnostics
-traceplot(results)
-gelman.diag(results)
-gelman.plot(results, ask = FALSE)
-effectiveSize(results)
-acfplot(results)
-summary(results)
+traceplot(results2)
+gelman.diag(results2)
+gelman.plot(results2, ask = FALSE)
+effectiveSize(results2)
+acfplot(results2)
+summary(results2)
 
 
 
@@ -156,32 +156,29 @@ summary(results)
 update(jags_model, 5000)
 
 #collect samples
-results <- coda.samples(
+results3 <- coda.samples(
   model = jags_model,
   variable.names = parameters,
   n.iter = 50000,
   thin = 1
 )
 
+# save the results so that the mcmc does not need to be computed repeatedly
+save.image(file = "mcmc_results.Rdata")
 
 #diagnostics
-traceplot(results)
-gelman.diag(results)
-gelman.plot(results, ask = FALSE)
-effectiveSize(results)
-densplot(results[, "r"])
-acfplot(results)
-summary(results)
+traceplot(results3)
+gelman.diag(results3)
+gelman.plot(results3, ask = FALSE)
+effectiveSize(results3)
+densplot(results3[, "r"])
+acfplot(results3)
+summary(results3)
 
 
 # task 5 ########
-# save the results so that the mcmc does not need to be computed repeatedly
-result_sum <- summary(results)
-save(result_sum, file="result_summary.Rdata")
-
-
-load("result_summary.Rdata")
-coef <- result_sum[[1]][,1] # the coefficient estimates as vector
+load("mcmc_results.Rdata")
+coef <- summary(results3)[[1]][,1] # the coefficient estimates as vector
 
 # 1: predicting the number of insurance claims for each age group in District 1,
 # Car Group 1, and 100 policyholders
