@@ -8,6 +8,7 @@ library(MCMCvis)
 library(ggmcmc)
 library(basicMCMCplots)
 
+
 # task 2 ----
 
 # diagnostics model 1
@@ -18,7 +19,6 @@ effectiveSize(results1)
 acfplot(results1)
 summary(results1)
 
-
 # diagnostics model 2
 traceplot(results2)
 gelman.diag(results2)
@@ -27,7 +27,6 @@ effectiveSize(results2)
 acfplot(results2)
 summary(results2)
 
-
 # diagnostics model 3
 traceplot(results3)
 gelman.diag(results3)
@@ -35,12 +34,32 @@ gelman.plot(results3, ask = FALSE)
 effectiveSize(results3)
 densplot(results3[, "r"])
 acfplot(results3)
+
+
+# task 3 ----
 summary(results3)
 
 
+# task 4 ----
+
+# Combine all chains into one matrix
+results_matrix <- as.matrix(results3)
+
+# Compute rate ratios for all betas
+RR <- exp(results_matrix[, grep("beta", colnames(results_matrix))])
+
+# Summarise
+apply(RR, 2, function(x) c(
+  mean   = mean(x),
+  median = median(x),
+  lower  = quantile(x, 0.025),
+  upper  = quantile(x, 0.975)
+))
+
 
 # task 5 ----
-coef <- summary(results3)[[1]][,1] # the coefficient estimates as vector
+# save the coefficient estimates as a vector
+coef <- summary(results3)[[1]][,1]
 
 # 1: predicting the number of insurance claims for each age group in District 1,
 # Car Group 1, and 100 policyholders
@@ -61,6 +80,39 @@ exp(log(100)-log_Holders_mean + coef[1] + coef[6])
 # ... age group >35: exp(log(100)-log_Holders_mean + beta_0 + beta_6*1)
 exp(log(100)-log_Holders_mean + coef[1] + coef[7])
 
+
 # 2: Give summary measures and plots of the posterior predictive distributions.
+
+# from mcmc samples compute the claims per age group
+claims_u25   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"])
+claims_25_29 <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
+                    + results_matrix[,"beta4"])
+claims_30_35 <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
+                    + results_matrix[,"beta5"])
+claims_o35   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
+                    + results_matrix[,"beta6"])
+
+
+# summary measures
+apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
+      function(x) c(mean   = mean(x),
+                    median = median(x),
+                    var = var(x),
+                    lower  = quantile(x, 0.025),
+                    upper  = quantile(x, 0.975)
+))
+
+# density plots
+plot(density(claims_u25), col=1, lwd=2,
+     xlim = c(0, 24), ylim = c(0, 0.7),
+     main="Posterior predictive distributions per age group",
+     xlab="Number of claims")
+lines(density(claims_25_29), col=2, lwd=2)
+lines(density(claims_30_35), col=3, lwd=2)
+lines(density(claims_o35), col=4, lwd=2)
+
+legend("topright",
+       legend=c("<25","25-29","30-35",">35"),
+       col=1:4, lwd=2)
 
 
