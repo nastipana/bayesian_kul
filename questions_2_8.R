@@ -101,6 +101,7 @@ apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
                     lower  = quantile(x, 0.025),
                     upper  = quantile(x, 0.975)
 ))
+# TODO  mean here different from the predicted values. because exp non-linear?
 
 # density plots
 plot(density(claims_u25), col=1, lwd=2,
@@ -116,3 +117,10 @@ legend("topright",
        col=1:4, lwd=2)
 
 
+# task 6 ----
+# Estimate the posterior probability that the claim rate for policyholders
+# of age 25-29 is higher than the claim rate for policyholders of age 30-35:
+# P(mu_25_29 > mu_30_35 | data):
+sum(claims_25_29 > claims_30_35)/length(claims_25_29)
+# or directlly over the mcmc samples and not the transformed values
+mean(results_matrix[,"beta4"] > results_matrix[,"beta5"])
