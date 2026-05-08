@@ -94,13 +94,13 @@ claims_o35   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
 
 
 # summary measures
-apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
+round(apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
       function(x) c(mean   = mean(x),
                     median = median(x),
                     var = var(x),
                     lower  = quantile(x, 0.025),
                     upper  = quantile(x, 0.975)
-))
+)), 3)
 # TODO  mean here different from the predicted values. because exp non-linear?
 
 # density plots
