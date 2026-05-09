@@ -61,16 +61,7 @@ apply(RR, 2, function(x) c(
 # save the coefficient estimates as a vector
 coef <- summary(results3)[[1]][,1]
 
-# 1: predicting the number of insurance claims for each age group in District 1,
-# Car Group 1, and 100 policyholders
-
-# district 1 and car group 1: baseline --> given by intercept beta0, meaning 
-# that all x_ji=0, for j=1,2,3,7,8,9.
-# holders = 100 = E_i
-# what we need to fluctuate: x_4i/x_5i/x_6i
-# E[Yi] = exp(log(Ei) + beta0 + beta1*x1i + beta2*x2i + ...)
-
-# prediction of number of claims for ...
+# 1: prediction of number of claims for ...
 # ... age group <25: exp(log(100)-log_Holders_mean + beta_0)
 exp(log(100)-log_Holders_mean + coef[1])
 # ... age group 25-29: exp(log(100)-log_Holders_mean + beta_0 + beta_4*1)
@@ -81,8 +72,6 @@ exp(log(100)-log_Holders_mean + coef[1] + coef[6])
 exp(log(100)-log_Holders_mean + coef[1] + coef[7])
 
 
-# 2: Give summary measures and plots of the posterior predictive distributions.
-
 # from mcmc samples compute the claims per age group
 claims_u25   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"])
 claims_25_29 <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
@@ -91,7 +80,6 @@ claims_30_35 <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
                     + results_matrix[,"beta5"])
 claims_o35   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
                     + results_matrix[,"beta6"])
-
 
 # summary measures
 round(apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
@@ -118,9 +106,4 @@ legend("topright",
 
 
 # task 6 ----
-# Estimate the posterior probability that the claim rate for policyholders
-# of age 25-29 is higher than the claim rate for policyholders of age 30-35:
-# P(mu_25_29 > mu_30_35 | data):
 sum(claims_25_29 > claims_30_35)/length(claims_25_29)
-# or directlly over the mcmc samples and not the transformed values
-mean(results_matrix[,"beta4"] > results_matrix[,"beta5"])
