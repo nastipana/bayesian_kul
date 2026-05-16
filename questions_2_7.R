@@ -137,7 +137,8 @@ rate_summary <- round(apply(cbind(rate_d1, rate_d2, rate_d3, rate_d4), 2, functi
             )), 3)
 rate_summary
 
-# ggmcmc caterpillar plot (cannot follow slide methodology since we computed district claim rates afterwards - not directly sampled from jags)
+# ggmcmc caterpillar plot (cannot follow slide methodology since we computed district claim 
+#rates afterwards - not directly sampled from jags)
 rates_matrix <- cbind(
   District1 = rate_d1,
   District2 = rate_d2,
