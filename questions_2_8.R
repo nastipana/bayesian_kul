@@ -7,7 +7,7 @@ library(runjags)
 library(MCMCvis)
 library(ggmcmc)
 library(basicMCMCplots)
-library(ggplot2)
+library(ggmcmc)
 
 
 # task 2 ----
@@ -135,31 +135,26 @@ rate_summary <- round(apply(cbind(rate_d1, rate_d2, rate_d3, rate_d4), 2, functi
                           lower  = quantile(x, 0.025),
                           upper  = quantile(x, 0.975)
             )), 3)
-
 rate_summary
 
-# Caterpillar plot 
-rate_df <- data.frame(
-  district = colnames(rates),
-  mean = apply(rates, 2, mean),
-  lower = apply(rates, 2, quantile, 0.025),
-  upper = apply(rates, 2, quantile, 0.975)
+# ggmcmc caterpillar plot (cannot follow slide methodology since we computed district claim rates afterwards - not directly sampled from jags)
+rates_matrix <- cbind(
+  District1 = rate_d1,
+  District2 = rate_d2,
+  District3 = rate_d3,
+  District4 = rate_d4
 )
 
-ggplot(rate_df, aes(x = mean, y = district)) +
-  geom_point(size = 3) +
-  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.2) +
-  labs(
-    x = "Claim rate per 100 policyholders",
+# convert to mcmc object
+rates_mcmc <- as.mcmc(rates_matrix)
+# convert to ggmcmc format
+out_ggs <- ggs(rates_mcmc)
+
+ggs_caterpillar(out_ggs) + 
+  ggplot2::labs(
+    x = "Claim rate per 100 policyholders (HPD)",
     y = "District",
-    title = "Posterior claim rate per 100 policyholders by district"
-  ) +
-  theme_minimal()
+    title= "Posterior Claim Rates per 100 policyfolders"
+  )
 
-
-
-
-
-
-
-
+# Task 8 ----
