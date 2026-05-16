@@ -7,6 +7,7 @@ library(runjags)
 library(MCMCvis)
 library(ggmcmc)
 library(basicMCMCplots)
+library(ggplot2)
 
 
 # task 2 ----
@@ -107,3 +108,58 @@ legend("topright",
 
 # task 6 ----
 sum(claims_25_29 > claims_30_35)/length(claims_25_29)
+
+
+
+
+
+# Task 7 ---- 
+# posterior samples are already in matrixform results_matrix
+# claim rate per 100 policyholders - holding youngest age group, car group 1 constant
+rate_d1 <- 100 * exp(-log_Holders_mean + results_matrix[, "beta0"])
+
+rate_d2 <- 100 * exp(-log_Holders_mean + results_matrix[, "beta0"] +
+                       results_matrix[, "beta1"])
+
+rate_d3 <- 100 * exp(-log_Holders_mean + results_matrix[, "beta0"] +
+                       results_matrix[, "beta2"])
+
+rate_d4 <- 100 * exp(-log_Holders_mean + results_matrix[, "beta0"] +
+                       results_matrix[, "beta3"])
+
+# summary measures 
+rate_summary <- round(apply(cbind(rate_d1, rate_d2, rate_d3, rate_d4), 2, function(x) c(
+                          mean   = mean(x),
+                          median = median(x),
+                          var = var(x),
+                          lower  = quantile(x, 0.025),
+                          upper  = quantile(x, 0.975)
+            )), 3)
+
+rate_summary
+
+# Caterpillar plot 
+rate_df <- data.frame(
+  district = colnames(rates),
+  mean = apply(rates, 2, mean),
+  lower = apply(rates, 2, quantile, 0.025),
+  upper = apply(rates, 2, quantile, 0.975)
+)
+
+ggplot(rate_df, aes(x = mean, y = district)) +
+  geom_point(size = 3) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.2) +
+  labs(
+    x = "Claim rate per 100 policyholders",
+    y = "District",
+    title = "Posterior claim rate per 100 policyholders by district"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+
