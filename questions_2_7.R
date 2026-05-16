@@ -7,8 +7,6 @@ library(runjags)
 library(MCMCvis)
 library(ggmcmc)
 library(basicMCMCplots)
-library(ggmcmc)
-
 
 # task 2 ----
 
