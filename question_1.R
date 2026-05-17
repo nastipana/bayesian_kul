@@ -80,21 +80,29 @@ writeLines(model_string, "bay_kul_model.txt")
 
 #second question
 #we get some random initial values
-my.inits <- function() {
-  list(
-    beta0 = rnorm(1),
-    beta1 = rnorm(1),
-    beta2 = rnorm(1),
-    beta3 = rnorm(1),
-    beta4 = rnorm(1),
-    beta5 = rnorm(1),
-    beta6 = rnorm(1),
-    beta7 = rnorm(1),
-    beta8 = rnorm(1),
-    beta9 = rnorm(1),
-    r = runif(1, 0.5, 5)
-  )
-}
+set.seed(1110) # since the runif() are generated before jags starts, so would also become random
+my.inits <- list(
+  list(beta0 = 0, beta1 = 0, beta2 = 0, beta3 = 0,
+       beta4 = 0, beta5 = 0, beta6 = 0,
+       beta7 = 0, beta8 = 0, beta9 = 0,
+       r = runif(1, 0.5, 5),
+       .RNG.name = "base::Mersenne-Twister",
+       .RNG.seed = 1001),
+  
+  list(beta0 = 0.5, beta1 = 0, beta2 = 0, beta3 = 0,
+       beta4 = 0, beta5 = 0, beta6 = 0,
+       beta7 = 0, beta8 = 0, beta9 = 0,
+       r = runif(1, 0.5, 5),
+       .RNG.name = "base::Mersenne-Twister",
+       .RNG.seed = 1010),
+  
+  list(beta0 = -0.5, beta1 = 0, beta2 = 0, beta3 = 0,
+       beta4 = 0, beta5 = 0, beta6 = 0,
+       beta7 = 0, beta8 = 0, beta9 = 0,
+       r = runif(1, 0.5, 5),
+       .RNG.name = "base::Mersenne-Twister",
+       .RNG.seed = 1011)
+)
 
 #parameters to monitor
 parameters <- c("beta0", "beta1", "beta2", "beta3", "beta4",
@@ -121,11 +129,15 @@ results1 <- coda.samples(
   thin = 1
 )
 
-
-
+#REcompile model results2
+jags_model <- jags.model(
+  file = "bay_kul_model.txt",
+  data = jags_data,
+  inits = my.inits,
+  n.chains = 3
+)
 #burn-in
 update(jags_model, 1000)
-
 #collect samples
 results2 <- coda.samples(
   model = jags_model,
@@ -134,11 +146,15 @@ results2 <- coda.samples(
   thin = 3
 )
 
-
-
+#REcompile model results3
+jags_model <- jags.model(
+  file = "bay_kul_model.txt",
+  data = jags_data,
+  inits = my.inits,
+  n.chains = 3
+)
 #burn-in
 update(jags_model, 5000)
-
 #collect samples
 results3 <- coda.samples(
   model = jags_model,
@@ -149,4 +165,5 @@ results3 <- coda.samples(
 
 
 # save the results so that the mcmc does not need to be computed repeatedly
-save.image(file = "mcmc_results.Rdata")
+save.image(file = "mcmc_resultsUpdated.Rdata")
+

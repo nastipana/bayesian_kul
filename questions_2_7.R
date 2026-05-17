@@ -1,4 +1,4 @@
-load("mcmc_results.Rdata")
+load("mcmc_resultsUpdated.Rdata")
 
 library(rjags)
 library(readr)
@@ -57,20 +57,6 @@ apply(RR, 2, function(x) c(
 
 
 # task 5 ----
-# save the coefficient estimates as a vector
-coef <- summary(results3)[[1]][,1]
-
-# 1: prediction of number of claims for ...
-# ... age group <25: exp(log(100)-log_Holders_mean + beta_0)
-exp(log(100)-log_Holders_mean + coef[1])
-# ... age group 25-29: exp(log(100)-log_Holders_mean + beta_0 + beta_4*1)
-exp(log(100)-log_Holders_mean + coef[1] + coef[5])
-# ... age group 30-35: exp(log(100)-log_Holders_mean + beta_0 + beta_5*1)
-exp(log(100)-log_Holders_mean + coef[1] + coef[6])
-# ... age group >35: exp(log(100)-log_Holders_mean + beta_0 + beta_6*1)
-exp(log(100)-log_Holders_mean + coef[1] + coef[7])
-
-
 # from mcmc samples compute the claims per age group
 claims_u25   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"])
 claims_25_29 <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
@@ -156,4 +142,3 @@ ggs_caterpillar(out_ggs) +
     title= "Posterior Claim Rates per 100 policyfolders"
   )
 
-# Task 8 ----
