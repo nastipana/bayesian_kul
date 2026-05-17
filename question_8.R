@@ -298,37 +298,11 @@ results_lognormal1 <- coda.samples(
 )
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Comparison of the 3
 summary(results_gamma001)
 summary(results_gamma11)
 summary(results_lognormal100)
 summary(results_lognormal1)
-#???? 
-
-
-
-
-
-
 
 
 
