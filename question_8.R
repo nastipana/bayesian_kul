@@ -304,5 +304,31 @@ summary(results_gamma11)
 summary(results_lognormal100)
 summary(results_lognormal1)
 
+# RR of each 
+resultsg001 <- as.matrix(results_gamma001)
+RRg001 <- exp(resultsg001[, grep("beta", colnames(resultsg001))])
+apply(RRg001, 2, function(x) c(
+  mean   = mean(x),
+  median = median(x),
+  lower  = quantile(x, 0.025),
+  upper  = quantile(x, 0.975)
+))
 
+resultsg11 <- as.matrix(results_gamma11)
+RRg11 <- exp(resultsg11[, grep("beta", colnames(resultsg11))])
+apply(RRg11, 2, function(x) c(
+  mean   = mean(x),
+  median = median(x),
+  lower  = quantile(x, 0.025),
+  upper  = quantile(x, 0.975)
+))
+
+resultsln1 <- as.matrix(results_lognormal1)
+RRln1 <- exp(resultsln1[, grep("beta", colnames(resultsln1))])
+apply(RRln1, 2, function(x) c(
+  mean   = mean(x),
+  median = median(x),
+  lower  = quantile(x, 0.025),
+  upper  = quantile(x, 0.975)
+))
 
