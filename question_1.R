@@ -80,25 +80,25 @@ writeLines(model_string, "bay_kul_model.txt")
 
 #second question
 #we get some random initial values
-set.seed(1110) # since the runif() are generated before jags starts, so would also become random
+set.seed(1110) # since the runif() & rnorm() are generated before jags starts, so would also become random
 my.inits <- list(
-  list(beta0 = 0, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
        r = runif(1, 0.5, 5),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1001),
   
-  list(beta0 = 0.5, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
        r = runif(1, 0.5, 5),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1010),
   
-  list(beta0 = -0.5, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
        r = runif(1, 0.5, 5),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1011)

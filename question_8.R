@@ -39,7 +39,7 @@ jags_data <- list(
   log_Holders_mean = log_Holders_mean
 )
 
-#____________________ Compare differznt priors for the dispersion parameter r of the negative binomial 
+#____________________ Compare different priors for the dispersion parameter r of the negative binomial 
 
 # (1) Original uninformative Gamma 
 
@@ -75,25 +75,25 @@ model_string <- "model {
 writeLines(model_string, "model_r_gamma001.txt")
 
 # (same for all 3) initial values but with seed incorporated 
-set.seed(1110) # since the runif() are generated before jags starts, so would also become random
+set.seed(1110) # since the runif() & rnorm() are generated before jags starts, so would also become random
 my.inits.seeded <- list(
-  list(beta0 = 0, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
        r = runif(1, 0.5, 5),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1001),
   
-  list(beta0 = 0.5, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
        r = runif(1, 0.5, 5),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1010),
   
-  list(beta0 = -0.5, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
        r = runif(1, 0.5, 5),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1011)
@@ -171,28 +171,28 @@ results_gamma11 <- coda.samples(
 
 # (3) Log-normal prior for the dispersion parameter r 
 
-# Need new initial values since r is now deterministic (<- instead of ~), therefrore jags doesnt allow us to set an initial value for r. We do so for log_r
+# Need new initial values since r is now deterministic (<- instead of ~), therefore jags doesn't allow us to set an initial value for r. We do so for log_r
 
 set.seed(1110) # since the runif() are generated before jags starts, so would also become random
 my.inits.seeded <- list(
-  list(beta0 = 0, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
-       log_r = runif(1, 0.5, 5),
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
+       log_r = log(runif(1, 0.5, 5)),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1001),
   
-  list(beta0 = 0.5, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
-       log_r = runif(1, 0.5, 5),
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
+       log_r = log(runif(1, 0.5, 5)),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1010),
   
-  list(beta0 = -0.5, beta1 = 0, beta2 = 0, beta3 = 0,
-       beta4 = 0, beta5 = 0, beta6 = 0,
-       beta7 = 0, beta8 = 0, beta9 = 0,
-       log_r = runif(1, 0.5, 5),
+  list(beta0 = rnorm(1), beta1 = rnorm(1), beta2 = rnorm(1), beta3 = rnorm(1),
+       beta4 = rnorm(1), beta5 = rnorm(1), beta6 = rnorm(1),
+       beta7 = rnorm(1), beta8 = rnorm(1), beta9 = rnorm(1),
+       log_r = log(runif(1, 0.5, 5)),
        .RNG.name = "base::Mersenne-Twister",
        .RNG.seed = 1011)
 )
@@ -298,13 +298,13 @@ results_lognormal1 <- coda.samples(
 )
 
 
-# Comparison of the 3
+# Comparison of the 4
 summary(results_gamma001)
 summary(results_gamma11)
 summary(results_lognormal100)
 summary(results_lognormal1)
 
-# RR of each 
+# RR of each (excluding nonsensical lognormal100)
 resultsg001 <- as.matrix(results_gamma001)
 RRg001 <- exp(resultsg001[, grep("beta", colnames(resultsg001))])
 apply(RRg001, 2, function(x) c(

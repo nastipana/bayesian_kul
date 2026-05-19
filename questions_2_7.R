@@ -79,7 +79,7 @@ round(apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
 
 
 
-# compute posterior predictive distribution by calculating size and probabilty
+# compute posterior predictive distribution by calculating size and probability
 # and sampling from negative binomial distribution
 r <- results_matrix[,"r"]
 
@@ -157,6 +157,6 @@ ggs_caterpillar(out_ggs) +
   ggplot2::labs(
     x = "Claim rate per 100 policyholders (HPD)",
     y = "District",
-    title= "Posterior Claim Rates per 100 policyfolders"
+    title= "Posterior Claim Rates per 100 policyholders"
   )
 
