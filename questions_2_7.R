@@ -74,16 +74,34 @@ round(apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
                     lower  = quantile(x, 0.025),
                     upper  = quantile(x, 0.975)
 )), 3)
-# TODO  mean here different from the predicted values. because exp non-linear?
+
+
+
+
+
+# compute posterior predictive distribution by calculating size and probabilty
+# and sampling from negative binomial distribution
+r <- results_matrix[,"r"]
+
+p_u25 <- r/(r + claims_u25)
+p_25_29 <- r/(r + claims_25_29)
+p_30_35 <- r/(r + claims_30_35)
+p_o35 <- r/(r + claims_o35)
+
+ppd_u25   <- rnbinom(length(p_u25),   size=r, prob=p_u25)
+ppd_25_29 <- rnbinom(length(p_25_29), size=r, prob=p_25_29)
+ppd_30_35 <- rnbinom(length(p_30_35), size=r, prob=p_30_35)
+ppd_o35   <- rnbinom(length(p_o35),   size=r, prob=p_o35)
+
 
 # density plots
-plot(density(claims_u25), col=1, lwd=2,
-     xlim = c(0, 24), ylim = c(0, 0.7),
+plot(density(ppd_u25), col=1, lwd=2,
+     xlim = c(0, 30), ylim = c(0, 0.3),
      main="Posterior predictive distributions per age group",
      xlab="Number of claims")
-lines(density(claims_25_29), col=2, lwd=2)
-lines(density(claims_30_35), col=3, lwd=2)
-lines(density(claims_o35), col=4, lwd=2)
+lines(density(ppd_25_29), col=2, lwd=2)
+lines(density(ppd_30_35), col=3, lwd=2)
+lines(density(ppd_o35), col=4, lwd=2)
 
 legend("topright",
        legend=c("<25","25-29","30-35",">35"),
