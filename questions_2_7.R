@@ -66,46 +66,62 @@ claims_30_35 <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
 claims_o35   <- exp(log(100) - log_Holders_mean + results_matrix[,"beta0"]
                     + results_matrix[,"beta6"])
 
+# claim predicitons
+round(apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35),
+            2, mean), 3)
+
+
+
+# compute posterior predictive distribution by calculating size (r) and using the
+# claims per age group to sample from a negative binomial distribution
+r <- results_matrix[,"r"]
+
+ppd_u25   <- rnbinom(length(claims_u25),   size=r, mu=claims_u25)
+ppd_25_29 <- rnbinom(length(claims_25_29), size=r, mu=claims_25_29)
+ppd_30_35 <- rnbinom(length(claims_30_35), size=r, mu=claims_30_35)
+ppd_o35   <- rnbinom(length(claims_o35),   size=r, mu=claims_o35)
+
+
 # summary measures
-round(apply(cbind(claims_u25, claims_25_29, claims_30_35, claims_o35), 2,
-      function(x) c(mean   = mean(x),
-                    median = median(x),
-                    var = var(x),
-                    lower  = quantile(x, 0.025),
-                    upper  = quantile(x, 0.975)
+round(apply(cbind(ppd_u25, ppd_25_29, ppd_30_35, ppd_o35), 2,
+            function(x) c(mean   = mean(x),
+                          median = median(x),
+                          var = var(x),
+                          lower  = quantile(x, 0.025),
+                          upper  = quantile(x, 0.975)
 )), 3)
 
 
+# to obtain PPD plots, transform data in a way that only probabilities for 
+# integers are displayed
+ppd <- list(ppd_u25, ppd_25_29, ppd_30_35, ppd_o35)
+ppd_tab <- list(0)
+ppd_prob <- list(0)
+ppd_claim <- list(0)
+for(i in 1:4){
+  ppd_tab[[i]] <- table(ppd[[i]]) # as table
+  ppd_prob[[i]] <- ppd_tab[[i]]/sum(ppd_tab[[i]]) # as probabilites
+  ppd_claim[[i]] <- as.numeric(names(ppd_prob[[i]])) # number of claims
+}
 
+# density plot
+plot(ppd_claim[[1]], ppd_prob[[1]], type = "h", lwd = 3.7,
+     xlab = "Number of claims",
+     ylab = "Probability", ylim = c(0, 0.13),
+     main = "Posterior predictive distributions per age group")
+lines(ppd_claim[[2]], ppd_prob[[2]], type = "h", 
+      col=adjustcolor(2, alpha.f=0.9), lwd=3.3)
+lines(ppd_claim[[3]], ppd_prob[[3]], type = "h",
+      col=adjustcolor(3, alpha.f=0.7), lwd=2.9)
+lines(ppd_claim[[4]], ppd_prob[[4]], type = "h", 
+      col=adjustcolor(4, alpha.f=0.5), lwd=2.5)
 
-
-# compute posterior predictive distribution by calculating size and probability
-# and sampling from negative binomial distribution
-r <- results_matrix[,"r"]
-
-p_u25 <- r/(r + claims_u25)
-p_25_29 <- r/(r + claims_25_29)
-p_30_35 <- r/(r + claims_30_35)
-p_o35 <- r/(r + claims_o35)
-
-ppd_u25   <- rnbinom(length(p_u25),   size=r, prob=p_u25)
-ppd_25_29 <- rnbinom(length(p_25_29), size=r, prob=p_25_29)
-ppd_30_35 <- rnbinom(length(p_30_35), size=r, prob=p_30_35)
-ppd_o35   <- rnbinom(length(p_o35),   size=r, prob=p_o35)
-
-
-# density plots
-plot(density(ppd_u25), col=1, lwd=2,
-     xlim = c(0, 30), ylim = c(0, 0.3),
-     main="Posterior predictive distributions per age group",
-     xlab="Number of claims")
-lines(density(ppd_25_29), col=2, lwd=2)
-lines(density(ppd_30_35), col=3, lwd=2)
-lines(density(ppd_o35), col=4, lwd=2)
+axis(2, at=seq(0, 0.13, by=0.02))
 
 legend("topright",
        legend=c("<25","25-29","30-35",">35"),
        col=1:4, lwd=2)
+
 
 
 # task 6 ----
@@ -113,9 +129,7 @@ sum(claims_25_29 > claims_30_35)/length(claims_25_29)
 
 
 
-
-
-# Task 7 ---- 
+# task 7 ---- 
 # posterior samples are already in matrixform results_matrix
 # claim rate per 100 policyholders - holding youngest age group, car group 1 constant
 rate_d1 <- 100 * exp(-log_Holders_mean + results_matrix[, "beta0"])
@@ -158,5 +172,5 @@ ggs_caterpillar(out_ggs) +
     x = "Claim rate per 100 policyholders (HPD)",
     y = "District",
     title= "Posterior Claim Rates per 100 policyholders"
-  )
+)
 
