@@ -105,22 +105,25 @@ for(i in 1:4){
 }
 
 # density plot
-plot(ppd_claim[[1]], ppd_prob[[1]], type = "h", lwd = 3.7,
+plot(ppd_claim[[1]], ppd_prob[[1]], type = "h", lwd =3,
      xlab = "Number of claims",
      ylab = "Probability", ylim = c(0, 0.13),
      main = "Posterior predictive distributions per age group")
-lines(ppd_claim[[2]], ppd_prob[[2]], type = "h", 
-      col=adjustcolor(2, alpha.f=0.9), lwd=3.3)
-lines(ppd_claim[[3]], ppd_prob[[3]], type = "h",
-      col=adjustcolor(3, alpha.f=0.7), lwd=2.9)
-lines(ppd_claim[[4]], ppd_prob[[4]], type = "h", 
-      col=adjustcolor(4, alpha.f=0.5), lwd=2.5)
+lines(ppd_claim[[2]]+0.2, ppd_prob[[2]], type = "h", 
+      col=3,#adjustcolor(2, alpha.f=0.9), 
+      lwd=3)
+lines(ppd_claim[[3]]+0.4, ppd_prob[[3]], type = "h",
+      col=2,#adjustcolor(3, alpha.f=0.7),
+      lwd=3)
+lines(ppd_claim[[4]]+0.6, ppd_prob[[4]], type = "h", 
+      col=5,#adjustcolor(4, alpha.f=0.5), 
+      lwd=3)
 
 axis(2, at=seq(0, 0.13, by=0.02))
 
 legend("topright",
        legend=c("<25","25-29","30-35",">35"),
-       col=1:4, lwd=2)
+       col=c(1,3,2,5), lwd=2)
 
 
 
